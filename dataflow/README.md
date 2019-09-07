@@ -23,6 +23,8 @@ Change read and write rule from false to true on the line 4
 allow read, write: if true;
 ```
 
+## Set up
+
 ### Setup deployment environment  
 To deploy Dataflow pipeline, you must setup required libraries on Cloud Shell.
 Clone repository into your Cloud Shell environment, change directory to `/dataflow`
@@ -65,4 +67,13 @@ $ python3 iot_pipeline.py \
 To check if your pipeline is deployed, go to [Dataflow console](https://console.cloud.google.com/dataflow)
 
 **Note:**  
-The pipeline **remains running** until you shutdown. To avoid unnecessary consumption, do not forget to shutdown Dataflow pipeline after you use (simply you just click “cancel” button on the pipeline console)
+The pipeline **remains running** until you shutdown.
+
+## Clean up
+The pipeline **remains running** until you shutdown, and it costs $0.09+ per hour (or $60+ per month).  
+To avoid unnecessary consumption, **do not forget to shutdown** Dataflow pipeline after you use (simply you just click “cancel” button on the pipeline console)
+
+1. Go to [Dataflow console](https://console.cloud.google.com/dataflow)
+2. Choose pipeline (Green circle means running pipeline)
+3. On the right side, click **Cancel** button
+4. If you see a dialog, choose **Cancel** option
