@@ -1,0 +1,12 @@
+runtime: python37
+
+env_variables:
+  IOT_DEVICEID: "demo1"
+  FB_COLLECTION: "iot"
+
+handlers:
+- url: /static
+  static_dir: static/
+  
+- url: /.*
+  script: auto

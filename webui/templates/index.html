@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="A front-end template that helps you build fast, modern mobile web apps.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Edge TPU Demo Console</title>
+
+
+    <!-- Tile icon for Win8 (144x144 + tile color) -->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+    <meta name="msapplication-TileColor" content="#3372DF">
+    <link rel="shortcut icon" href="images/favicon.png">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:regular,bold,italic,thin,light,bolditalic,black,medium&amp;lang=en">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.red-pink.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
+    <style>
+    #canvas {width:640px;height:360px;background-color:#f8f8f8;}
+    </style>
+  </head>
+  <body class="mdl-demo mdl-color--grey-100 mdl-color-text--grey-700 mdl-base">
+    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+      <header class="mdl-layout__header mdl-layout__header--scroll mdl-color--primary">
+        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+        </div>
+        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+          <h3><i class="material-icons">camera_alt</i>  Edge TPU Demo Console</h3>
+        </div>
+        <div class="mdl-layout--large-screen-only mdl-layout__header-row">
+        </div>
+        <div class="mdl-layout__tab-bar mdl-js-ripple-effect mdl-color--primary-dark">
+          <a href="#overview" class="mdl-layout__tab is-active">Demo</a>
+          
+        </div>
+      </header>
+      <main class="mdl-layout__content">
+        <div class="mdl-layout__tab-panel is-active" id="overview">
+          <section class="section--center mdl-grid mdl-grid--no-spacing mdl-shadow--2dp" style="background-color:white;">
+            <header class="section__play-btn mdl-cell mdl-cell--12-col-desktop mdl-cell--12-col-tablet mdl-cell--12-col-phone mdl-color--teal-100 mdl-color-text--white">
+              <canvas id="canvas" width="640px" height="360px"></canvas>
+            </header>
+          </section>
+          
+          <section class="section--footer mdl-color--white mdl-grid">
+            <div class="section__text mdl-cell mdl-cell--6-col-desktop mdl-cell--6-col-tablet mdl-cell--12-col-phone">
+              <h5>Trouble?</h5>
+              Reload page if something wrong.
+            </div>
+          </section>
+        </div>
+        <footer class="mdl-mega-footer">
+          <div class="mdl-mega-footer--middle-section">
+            <div class="mdl-mega-footer--drop-down-section">
+              <input class="mdl-mega-footer--heading-checkbox" type="checkbox" checked>
+              <h1 class="mdl-mega-footer--heading">GCP Products</h1>
+              <ul class="mdl-mega-footer--link-list">
+                <li><a href="https://cloud.google.com/automl/">AutoML Vision</a></li>
+                <li><a href="https://cloud.google.com/functions/">Cloud Functions</a></li>
+                <li><a href="https://firebase.google.com/products/hosting/">Firebase Hosting</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="mdl-mega-footer--bottom-section">
+            <div class="mdl-logo">
+              Made by <a href="https://github.com/hayatoy">hayatoy@</a>
+            </div>
+          </div>
+        </footer>
+      </main>
+    </div>
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase-firestore.js"></script>
+    <script>
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.scale(1, 1);
+
+    firebase.initializeApp({
+      // apiKey: '{{ api_key }}',
+      //authDomain: '### FIREBASE AUTH DOMAIN ###',
+      projectId: '{{ project_id }}'
+    });
+
+    // Initialize Cloud Firestore through Firebase
+    var db = firebase.firestore();
+    
+    db.collection("{{ collection }}").doc('{{ device_id }}').onSnapshot(function(doc) {
+        console.log(`${doc.id} => ${doc.data()}`);
+        var obj_color = {"Car":"green", "Person":"red"};
+        
+        ctx.clearRect(0, 0, 640, 360);
+        Object.values(doc.data()).forEach(function(obj){
+          console.log(obj.points);
+          var pts = obj.points.split(",");
+          ctx.beginPath();
+          ctx.lineWidth = "2";
+          ctx.strokeStyle = obj_color[obj.name] ;
+          ctx.rect(pts[0], pts[1], (pts[2]-pts[0]), (pts[3]-pts[1]));
+          ctx.stroke();
+          ctx.font = "12px Arial";
+          ctx.fillText(obj.name, pts[0], pts[1]-2);
+        });
+    });
+    
+    window.onload = function() {
+      //
+    }
+    var rad = document.modeselect.options;
+    var prev = null;
+    function setConfig(option){
+      document.getElementById('p2').style.display = "";
+      var body = JSON.stringify({"deviceId":"edge1",
+                                  "version":0,
+                                  "data":option});
+      fetch("/config", {method: "post", body:body, headers:{'Content-Type': 'application/json'}})
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (json) {
+        document.getElementById('p2').style.display = "none";
+      })
+      .catch(function (error){
+        document.modeselect.options[prev].checked=true;
+        document.getElementById('p2').style.display = "none";
+      });
+    }
+    for(var i = 0; i < rad.length; i++) {
+        rad[i].addEventListener('change', function() {
+            (prev)? console.log("previous:" + prev.value):null;
+            if(this !== prev) {
+                prev = this;
+            }
+            setConfig(this.value);
+        });
+    }
+</script>
+
+  </body>
+</html>
+
+
