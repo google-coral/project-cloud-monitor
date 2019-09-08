@@ -1,3 +1,6 @@
+# ETL pipeline using Dataflow
+In this part, you will make an ETL pipeline using Dataflow.
+
 ## Prerequisites
 
 ### Enable Firestore and Dataflow
