@@ -40,6 +40,9 @@ To set up each parts, go to
 
 in this repository respectively.
 
+## How to use
+Open the webUI on your browser (Refer to `/webui`), and start script (Refer to `/edge`).
+
 ## Clean up
 To avoid unneccesary consumption, you should clean up resources once you finish the demo.
 Follow clean up section for each `/edge`, `/dataflow`, and `/webui`.
