@@ -1,8 +1,12 @@
 # Cloud Monitor
 This repository contains a fundamental demo architecture to aggregate inference data from Coral Dev Board, through ETL pipeline and stores the data in DWH and monitor the data on WebUI in realtime. This architecture is designed for enterprise scale, may be used in production with a few modification.
 
+| Edge | Cloud |
+| ---- | ----- |
+| ![Edge](./edge.gif) | ![Cloud](./web.gif) |
+
 ## Architecture
-![Architecture](./architecture.png)
+![Architecture](./architecture.png)  
 This demo contains 2 parts, an edge side and a Cloud side.
 The edge side (which here means Coral Dev Board) runs a simple
  MobileNet SSD Object Detection. Also the board is registered in
