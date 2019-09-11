@@ -89,7 +89,6 @@
     
     db.collection("{{ collection }}").doc('{{ device_id }}').onSnapshot(function(doc) {
         console.log(`${doc.id} => ${doc.data()}`);
-        var obj_color = {"Car":"green", "Person":"red"};
         
         ctx.clearRect(0, 0, 640, 360);
         Object.values(doc.data()).forEach(function(obj){
@@ -97,10 +96,11 @@
           var pts = obj.points.split(",");
           ctx.beginPath();
           ctx.lineWidth = "2";
-          ctx.strokeStyle = obj_color[obj.name] ;
+          ctx.strokeStyle = "red" ;
           ctx.rect(pts[0], pts[1], (pts[2]-pts[0]), (pts[3]-pts[1]));
           ctx.stroke();
           ctx.font = "12px Arial";
+          ctx.fillStyle = "red";
           ctx.fillText(obj.name, pts[0], pts[1]-2);
         });
     });
@@ -108,11 +108,11 @@
     window.onload = function() {
       //
     }
-    var rad = document.modeselect.options;
+    /* var rad = document.modeselect.options;
     var prev = null;
     function setConfig(option){
       document.getElementById('p2').style.display = "";
-      var body = JSON.stringify({"deviceId":"edge1",
+      var body = JSON.stringify({"deviceId":"{{ device_id }}",
                                   "version":0,
                                   "data":option});
       fetch("/config", {method: "post", body:body, headers:{'Content-Type': 'application/json'}})
@@ -135,7 +135,7 @@
             }
             setConfig(this.value);
         });
-    }
+    } */
 </script>
 
   </body>
