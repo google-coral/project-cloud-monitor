@@ -9,8 +9,13 @@ Also make sure if you can [run a model with camera](https://coral.withgoogle.com
 
 1. Install required libraries
 ```
-$ pip3 install pyjwt==1.7.1, paho-mqtt, imutils
-$ sudo apt-get install python3-cryptography
+echo "deb https://packages.cloud.google.com/apt coral-cloud-stable main" | sudo tee /etc/apt/sources.list.d/coral-cloud.list
+
+curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+
+sudo apt update
+
+sudo apt install python3-coral-cloudiot
 ```
 
 2. Clone this repository
@@ -31,8 +36,10 @@ Each device must be registered to IoT Core in order to publish data and receive 
 1. [Enable IoT Core and Pub/Sub](https://console.cloud.google.com/flows/enableapi?apiid=cloudiot.googleapis.com,pubsub)
 2. [Create a device registry](https://cloud.google.com/iot/docs/quickstart#create_a_device_registry)  
 Use `demo1` for Device name, and `demo-topic` for Topic name. 
-3. [Generate a device key pair](https://cloud.google.com/iot/docs/quickstart#generate_a_device_key_pair)
-4. [Add a device to the registry](https://cloud.google.com/iot/docs/quickstart#add_a_device_to_the_registry)
+3. [Add a device to the registry](https://cloud.google.com/iot/docs/quickstart#add_a_device_to_the_registry)
+To get the ES256 key of the HW crypto run `python3 /usr/lib/python3/dist-packages/coral/cloudiot/ecc608_pubkey.py`
+4. Configure the cloud config
+Edit the cloud_config.ini in the edge folder to ProjectID, RegistryID, and DeviceID set in step 2. Enable Cloud IoT core by setting Enabled = true.
 5. Install root certificate
 ```
 $ wget https://pki.goog/roots.pem
@@ -43,9 +50,8 @@ Run the following commands, then open browser.
 
 ```
 export DEMO_FILES="$HOME/demo_files"
-export PROJECTID="YOUR GCP PROJECT ID"
 python3 detect_cloudiot.py \
-  --project_id ${PROJECTID} \
+  --cloud_config cloud_config.ini \
   --model ${DEMO_FILES}/mobilenet_ssd_v1_coco_quant_postprocess_edgetpu.tflite \
   --labels ${DEMO_FILES}/coco_labels.txt \
   --threshold 0.4 \
