@@ -58,5 +58,8 @@ python3 detect_cloudiot.py \
   --filter person
 ```
 
+Please note if you are using a USB camera you will need to add the corect source. I.E: 
+```--source /dev/video1:YUY2:640x480:20/1```
+
 ## Clean up
 If you want to delete Device registry, go to IoT Core console, select the registry and click **DELETE REGISTRY** button on the top.
